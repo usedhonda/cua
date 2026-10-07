@@ -383,7 +383,7 @@ class GeminiAgent(BaseAgent):
         screenshot_bytes = await session.screenshot()
 
         # Add DONE instruction to the task description
-        full_instruction = f"{instruction}\n\nUse the provided computer to complete the task as described. When the task is complete, indicate so clearly by outputting 'DONE'."
+        full_instruction = f"{instruction}\n\nUse the provided computer to complete the task as described. When the task is complete, indicate so clearly by outputting only 'DONE' or calling the done function."
 
         initial_parts = [
             types.Part(text=full_instruction),
@@ -459,8 +459,9 @@ class GeminiAgent(BaseAgent):
                     if hasattr(part, "text") and part.text:
                         print(f"[Model]: {part.text}", flush=True)
                         model_parts.append(part)
-                        # Check if model indicates task completion
-                        if "DONE" in part.text:
+                        # Only a final standalone marker signals completion;
+                        # mentions such as 'NOT DONE' and thinking are not final answers.
+                        if part.text.strip() == "DONE" and not getattr(part, "thought", False):
                             print(f"\n[Task completed] Model indicated completion at step {step}")
                             task_completed = True
                     if hasattr(part, "function_call") and part.function_call:
