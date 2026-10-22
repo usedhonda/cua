@@ -17,7 +17,7 @@ class GeminiAgent(BaseAgent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.model = kwargs.get("model", "gemini-3-pro-preview")
+        self.model = kwargs.get("model", "gemini-3.1-pro-preview")
         self.api_key = kwargs.get("api_key", os.getenv("GOOGLE_API_KEY"))
         self.thinking_level = kwargs.get("thinking_level", "low")
         self.media_resolution = kwargs.get("media_resolution", "high")
